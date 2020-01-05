@@ -111,6 +111,7 @@ class TranslationController extends Controller
                 'package_contains' => "max:{$maxContains}",
                 'description_list' => "max:{$maxDescList}",
                 'description' => "required|max:{$maxDesc}",
+                'duration' => 'required',
             ]
         );
         $product = Product::where('sku', $request['product_sku'])->firstOrFail();
@@ -124,6 +125,7 @@ class TranslationController extends Controller
                 'description_list' => $request['description_list'],
                 'package_contains' => $request['package_contains'],
                 'translated_by' => $request['email'],
+                'duration' => $request['duration'],
             ]
         );
         $product->translations()->save($productTranslation);

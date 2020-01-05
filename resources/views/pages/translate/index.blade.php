@@ -10,23 +10,25 @@
 <script src="{{ asset('js/charCount.js') }}"></script>
 <script src="{{ asset('js/autoFocus.js') }}"></script>
 <script src="{{ asset('js/translate.js') }}"></script>
+<script src="{{ asset('js/timer.js') }}"></script>
 @endsection
 
 
 @section('content')
 <div class="row justify-content-center">
-    <div class="{{-- d-none --}}">
-        {{-- {{ $products->links() }} --}}
+    <div>
+        <p id="time">00:00</p>
     </div>
     <div class="col-lg-12 pb-4">
         <form id="create_translation" method="POST" action="{{ route('product.translate') }}">
             @csrf
+            <input type="number" name="duration" class="d-none" id="timeInput" required>
             @php
                 // dd(Auth::user()->country_code, $product)
                 // dd($products)
             @endphp
             @if (empty($products))
-                Theres nothing here
+                There's nothing here
             @else
                 @foreach ($products as $product)
 

@@ -20,12 +20,12 @@ Dashboard
                         <p class="card-text text-center lead">
                             {{ count($products) }}
                         </p>
-                        @if (Auth::user() && Auth::user()->is_admin)
-                            <a href="{{ route('export') }}" class="btn btn-success float-right ml-3">Export</a>
-                            <a href="{{ route('product.create') }}" class="btn btn-success float-right ml-3">Import</a>
-                        @endif
                         @if (count($products))
-                            <a href="{{ route('product.translate') }}" class="btn btn-success float-right">Start</a>
+                            <a href="{{ route('product.translate') }}" class="btn btn-success float-right">Start Translating</a>
+                        @endif
+                        @if (Auth::user() && Auth::user()->is_admin)
+                            <a href="{{ route('export') }}" class="btn btn-outline-primary float-right mr-3">Export</a>
+                            <a href="{{ route('product.create') }}" class="btn btn-outline-primary float-right mr-3">Import</a>
                         @endif
                     </div>
                 </div>
@@ -33,8 +33,26 @@ Dashboard
             <div class="col-lg-4 pb-4">
                 <div class="card h-100">
                     <div class="card-body">
+                        @php
+                            $translations = App\ProductTranslation::where('translated_by', Auth::user()->email)->get();
+                            $total = 0;
+                            $avg = '';
+                        @endphp
+                        @foreach ($translations as $translation)
+                            @php
+                                $duration = $translation->duration;
+                                $total += $duration;
+                            @endphp
+                        @endforeach
+
+                        @if (count($translations) != 0)
+                            @php
+                                $avg = ($total / count($translations));
+                            @endphp
+                        @endif
+
                         <h5 class="card-title">Avg time/translation</h5>
-                        <p class="card-text text-center">{ calculate avg time/translation }</p>
+                        <p class="card-text text-center lead">{{ is_numeric($avg) ? $avg . " sec" : "N/A" }}</p>
                     </div>
                 </div>
             </div>
@@ -68,7 +86,8 @@ Dashboard
                                 </div>
                             </div>
                             @php
-                                $translators = $users->where('is_admin', false);
+                                // $translators = $users->where('is_admin', false);
+                                $translators = $users;
                                 $numItems = count($translators);
                                 $i = 0;
                             @endphp
@@ -80,11 +99,38 @@ Dashboard
                                     <div class="col-sm-2 text-center">
                                         <p class="d-inline align-middle">{{ ucfirst($translator->country_code) }}</p>
                                     </div>
+
+                                    @php
+                                        $translations = App\ProductTranslation::where('translated_by', $translator->email)->get();
+                                    @endphp
+
                                     <div class="col-sm-2 text-center">
-                                        <p class="d-inline align-middle">3.551</p>
+                                        <p class="d-inline align-middle">{{ count($translations) }}</p>
                                     </div>
+
+                                    @php
+                                        $total = 0;
+                                        $avg = 0;
+                                    @endphp
+                                    @foreach ($translations as $translation)
+                                        @php
+                                            $duration = $translation->duration;
+                                            $total += $duration;
+                                        @endphp
+                                    @endforeach
+
+                                    @if (count($translations) != 0)
+                                        @php
+                                            $avg = ($total / count($translations));
+                                        @endphp
+                                    @else
+                                        @php
+                                            $avg = '';
+                                        @endphp
+                                    @endif
+
                                     <div class="col-sm-2 text-right">
-                                        <p class="d-inline align-middle">0:32 min</p>
+                                        <p class="d-inline align-middle">{{ is_numeric($avg) ? $avg . " sec" : "N/A" }}</p>
                                     </div>
                                 </div>
                             @endforeach

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ProductTranslation;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,12 +38,6 @@ class HomeController extends Controller
 
         // Sort users by avg/translation time
         $users = User::All();
-        return view(
-            'pages.home',
-            [
-                'users' => $users,
-                'products' => $products,
-            ]
-        );
+        return view('pages.home', compact('users', 'products'));
     }
 }

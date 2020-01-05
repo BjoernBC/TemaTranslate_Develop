@@ -50,7 +50,7 @@ class ProductController extends Controller
         // dd($request);
         $product = new Product(
             [
-                'sku' => $request['SKU'],
+                'sku' => strip_tags($request['SKU']),
                 'is_priority' => $request['is_priority'],
                 'translation_level' => $request['translation_level'],
             ]
